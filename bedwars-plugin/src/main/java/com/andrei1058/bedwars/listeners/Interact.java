@@ -229,49 +229,53 @@ public class Interact implements Listener {
             if (a != null){
                 if(a.isPlayer(p)){
                     if (b.getType() == Material.CHEST){
-                        if (a.isSpectator(p) || a.getRespawnSessions().containsKey(p)) {
-                            e.setCancelled(true);
-                            return;
-                        }
-                        //make it so only team members can open chests while team is alive, and all when is eliminated
-                        ITeam owner = null;
-                        int isRad = a.getConfig().getInt(ConfigPath.ARENA_ISLAND_RADIUS);
-                        for (ITeam t : a.getTeams()) {
-                            if (t.getSpawn().distance(e.getClickedBlock().getLocation()) <= isRad) {
-                                owner = t;
+                        if (inHand.getType() != Material.WOOD_SWORD && inHand.getType() != Material.COMPASS) {
+                            if (a.isSpectator(p) || a.getRespawnSessions().containsKey(p)) {
+                                e.setCancelled(true);
+                                return;
                             }
-                        }
-                        if (owner != null) {
-                            if (!owner.isMember(p)) {
-                                if (!(owner.getMembers().isEmpty() && owner.isBedDestroyed())) {
-                                    e.setCancelled(true);
-                                    p.sendMessage(getMsg(p, Messages.INTERACT_CHEST_CANT_OPEN_TEAM_ELIMINATED));
+                            //make it so only team members can open chests while team is alive, and all when is eliminated
+                            ITeam owner = null;
+                            int isRad = a.getConfig().getInt(ConfigPath.ARENA_ISLAND_RADIUS);
+                            for (ITeam t : a.getTeams()) {
+                                if (t.getSpawn().distance(e.getClickedBlock().getLocation()) <= isRad) {
+                                    owner = t;
                                 }
-                            } else {
-                                Chest chest = (Chest)b.getState();
-                                Inventory chestInventory = chest.getInventory();
-                                Map<Integer, ItemStack> remainingItems = chestInventory.addItem(inHand);
-                                if (remainingItems.isEmpty()){
-                                    p.getInventory().setItemInHand(null);
-                                    p.sendMessage("§a成功将物品放入箱子！");
+                            }
+                            if (owner != null) {
+                                if (!owner.isMember(p)) {
+                                    if (!(owner.getMembers().isEmpty() && owner.isBedDestroyed())) {
+                                        e.setCancelled(true);
+                                        p.sendMessage(getMsg(p, Messages.INTERACT_CHEST_CANT_OPEN_TEAM_ELIMINATED));
+                                    }
                                 } else {
-                                    p.sendMessage("§c你的队伍箱子已满");
+                                    Chest chest = (Chest) b.getState();
+                                    Inventory chestInventory = chest.getInventory();
+                                    Map<Integer, ItemStack> remainingItems = chestInventory.addItem(inHand);
+                                    if (remainingItems.isEmpty()) {
+                                        p.getInventory().setItemInHand(null);
+                                        p.sendMessage("§a成功将物品放入箱子！");
+                                    } else {
+                                        p.sendMessage("§c你的队伍箱子已满");
+                                    }
                                 }
                             }
                         }
                     }
                     if (b.getType() == Material.ENDER_CHEST){
-                        if (a.isSpectator(p) || a.getRespawnSessions().containsKey(p)) {
-                            e.setCancelled(true);
-                            return;
-                        }
-                        Inventory chestInventory = p.getEnderChest();
-                        Map<Integer, ItemStack> remainingItems = chestInventory.addItem(inHand);
-                        if (remainingItems.isEmpty()){
-                            p.getInventory().setItemInHand(null);
-                            p.sendMessage("§a成功将物品放入末影箱！");
-                        } else {
-                            p.sendMessage("§c你的末影箱已满");
+                        if (inHand.getType() != Material.WOOD_SWORD && inHand.getType() != Material.COMPASS) {
+                            if (a.isSpectator(p) || a.getRespawnSessions().containsKey(p)) {
+                                e.setCancelled(true);
+                                return;
+                            }
+                            Inventory chestInventory = p.getEnderChest();
+                            Map<Integer, ItemStack> remainingItems = chestInventory.addItem(inHand);
+                            if (remainingItems.isEmpty()) {
+                                p.getInventory().setItemInHand(null);
+                                p.sendMessage("§a成功将物品放入末影箱！");
+                            } else {
+                                p.sendMessage("§c你的末影箱已满");
+                            }
                         }
                     }
                 }
