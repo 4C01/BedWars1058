@@ -34,6 +34,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Fireball;
@@ -47,10 +48,13 @@ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Openable;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
+
+import java.util.Map;
 
 import static com.andrei1058.bedwars.BedWars.*;
 import static com.andrei1058.bedwars.api.language.Language.getMsg;
@@ -214,6 +218,76 @@ public class Interact implements Listener {
                             nms.minusAmount(p, inHand, 1);
                         }
 
+                    }
+                }
+            }
+        }
+        if (e.getAction() == Action.LEFT_CLICK_BLOCK){
+            Block b = e.getClickedBlock();
+            if (inHand == null)return;
+            IArena a = Arena.getArenaByPlayer(p);
+            if (a != null){
+                if(a.isPlayer(p)){
+                    if (b.getType() == Material.CHEST){
+                        if (inHand.getType() != Material.WOOD_SWORD &&
+                                inHand.getType() != Material.COMPASS &&
+                                inHand.getType() != Material.WOOD_PICKAXE &&
+                                inHand.getType() != Material.STONE_PICKAXE &&
+                                inHand.getType() != Material.IRON_PICKAXE &&
+                                inHand.getType() != Material.GOLD_PICKAXE &&
+                                inHand.getType() != Material.DIAMOND_PICKAXE &&
+                                inHand.getType() != Material.WOOD_AXE &&
+                                inHand.getType() != Material.STONE_AXE &&
+                                inHand.getType() != Material.IRON_AXE &&
+                                inHand.getType() != Material.GOLD_AXE &&
+                                inHand.getType() != Material.DIAMOND_AXE) {
+                            if (a.isSpectator(p) || a.getRespawnSessions().containsKey(p)) {
+                                e.setCancelled(true);
+                                return;
+                            }
+                            //make it so only team members can open chests while team is alive, and all when is eliminated
+                            ITeam owner = null;
+                            int isRad = a.getConfig().getInt(ConfigPath.ARENA_ISLAND_RADIUS);
+                            for (ITeam t : a.getTeams()) {
+                                if (t.getSpawn().distance(e.getClickedBlock().getLocation()) <= isRad) {
+                                    owner = t;
+                                }
+                            }
+                            if (owner != null) {
+                                if (!owner.isMember(p)) {
+                                    if (!(owner.getMembers().isEmpty() && owner.isBedDestroyed())) {
+                                        e.setCancelled(true);
+                                        p.sendMessage(getMsg(p, Messages.INTERACT_CHEST_CANT_OPEN_TEAM_ELIMINATED));
+                                    }
+                                } else {
+                                    Chest chest = (Chest) b.getState();
+                                    Inventory chestInventory = chest.getInventory();
+                                    Map<Integer, ItemStack> remainingItems = chestInventory.addItem(inHand);
+                                    if (remainingItems.isEmpty()) {
+                                        p.getInventory().setItemInHand(null);
+                                        p.sendMessage("§a成功将物品放入箱子！");
+                                    } else {
+                                        p.sendMessage("§c你的队伍箱子已满");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (b.getType() == Material.ENDER_CHEST){
+                        if (inHand.getType() != Material.WOOD_SWORD && inHand.getType() != Material.COMPASS) {
+                            if (a.isSpectator(p) || a.getRespawnSessions().containsKey(p)) {
+                                e.setCancelled(true);
+                                return;
+                            }
+                            Inventory chestInventory = p.getEnderChest();
+                            Map<Integer, ItemStack> remainingItems = chestInventory.addItem(inHand);
+                            if (remainingItems.isEmpty()) {
+                                p.getInventory().setItemInHand(null);
+                                p.sendMessage("§a成功将物品放入末影箱！");
+                            } else {
+                                p.sendMessage("§c你的末影箱已满");
+                            }
+                        }
                     }
                 }
             }
