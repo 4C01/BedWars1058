@@ -101,7 +101,7 @@ public class PlayerDrops {
                         killer.getWorld().dropItemNaturally(new Location(arena.getWorld(), v.getX(), v.getY(), v.getZ()), i);
                     }
                 }
-                killer.setLevel(killer.getLevel() + (victim.getLevel() / 2));
+                killer.giveExpLevels(victim.getExpToLevel() / 2);
             } else {
                 // add-to-inventory feature if receiver is not respawning
                 if (!arena.isPlayer(killer)) return true;
@@ -122,7 +122,7 @@ public class PlayerDrops {
                             materialDrops.put(i.getType(), i.getAmount());
                         }
                     }
-                    killer.setLevel(killer.getLevel() + (victim.getLevel() / 2));
+                    killer.giveExpLevels(victim.getExpToLevel() / 2);
                 }
 
                 for (Map.Entry<Material, Integer> entry : materialDrops.entrySet()) {
@@ -164,10 +164,10 @@ public class PlayerDrops {
             }
         }
         if (Arena.getArenaByPlayer(player).getConfig().getBoolean("xp")) {
-            for (int i = player.getLevel() / 2; i >= 0; i--) {
+            for (int i = player.getExpToLevel() / 2; i >= 0; i--) {
                 player.getLocation().getWorld().dropItemNaturally(player.getLocation(), new ItemStack(Material.EXP_BOTTLE));
             }
-            player.setLevel(player.getLevel() / 2);
+            player.giveExpLevels(-(player.getExpToLevel() / 2));
         }
     }
 }

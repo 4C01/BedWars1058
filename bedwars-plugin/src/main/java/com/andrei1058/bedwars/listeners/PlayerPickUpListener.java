@@ -18,17 +18,17 @@ public class PlayerPickUpListener implements Listener {
         Material material = event.getItem().getItemStack().getType();
         if (Arena.getArenaByPlayer(player).getConfig().getBoolean("xp")){
             if (material == Material.IRON_INGOT) {
-                player.setLevel(player.getLevel() + event.getItem().getItemStack().getAmount() * config.getInt(ConfigPath.CURRENCY_IRON_PRICE));
+                player.giveExpLevels(event.getItem().getItemStack().getAmount() * config.getInt(ConfigPath.CURRENCY_IRON_PRICE));
                 event.getItem().remove();
                 event.setCancelled(true);
             }
             if (material == Material.GOLD_INGOT) {
-                player.setLevel(player.getLevel() + event.getItem().getItemStack().getAmount() * config.getInt(ConfigPath.CURRENCY_GOLD_PRICE));
+                player.giveExpLevels(event.getItem().getItemStack().getAmount() * config.getInt(ConfigPath.CURRENCY_GOLD_PRICE));
                 event.getItem().remove();
                 event.setCancelled(true);
             }
             if (material == Material.EMERALD) {
-                player.setLevel(player.getLevel() + event.getItem().getItemStack().getAmount() * config.getInt(ConfigPath.CURRENCY_EMERALD_PRICE));
+                player.giveExpLevels(event.getItem().getItemStack().getAmount() * config.getInt(ConfigPath.CURRENCY_EMERALD_PRICE));
                 event.getItem().remove();
                 event.setCancelled(true);
             }

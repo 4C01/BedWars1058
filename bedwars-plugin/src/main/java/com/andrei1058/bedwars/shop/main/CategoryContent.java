@@ -177,9 +177,9 @@ public class CategoryContent implements ICategoryContent {
                 return;
             }
         }else{
-            if (player.getLevel() < ct.getPrice())
+            if (player.getExpToLevel() < ct.getPrice())
                 player.sendMessage(getMsg(player, Messages.SHOP_INSUFFICIENT_MONEY).replace("{currency}", "Level").
-                        replace("{amount}", String.valueOf(ct.getPrice() - player.getLevel())));
+                        replace("{amount}", String.valueOf(ct.getPrice() - player.getExpToLevel())));
             Sounds.playSound(ConfigPath.SOUNDS_INSUFF_MONEY, player);
             return;
         }
@@ -276,7 +276,7 @@ public class CategoryContent implements ICategoryContent {
             im = i.getItemMeta().clone();
             boolean canAfford = calculateMoney(player, ct.getCurrency()) >= ct.getPrice();
             if (Arena.getArenaByPlayer(player).getConfig().getBoolean("xp")){
-                canAfford = player.getLevel() >= ct.getPrice() * multiplier;
+                canAfford = player.getExpToLevel() >= ct.getPrice() * multiplier;
             }
             PlayerQuickBuyCache qbc = PlayerQuickBuyCache.getQuickBuyCache(player.getUniqueId());
             boolean hasQuick = qbc != null && hasQuick(qbc);
@@ -495,7 +495,7 @@ public class CategoryContent implements ICategoryContent {
             if(currency == Material.EMERALD) {
                 cost = amount * config.getInt(ConfigPath.CURRENCY_EMERALD_PRICE);
             }
-            player.setLevel(player.getLevel() - cost);
+            player.giveExpLevels(- cost);
         }
 
     }
