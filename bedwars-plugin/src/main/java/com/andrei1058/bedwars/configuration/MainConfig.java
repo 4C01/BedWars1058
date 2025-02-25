@@ -212,6 +212,11 @@ public class MainConfig extends ConfigManager {
 
         yml.addDefault(ConfigPath.GENERAL_GAME_END_SB_TOP_STATISTIC, DefaultStatistics.KILLS.toString());
         yml.addDefault(ConfigPath.GENERAL_GAME_END_SB_TOP_HIDE_MISSING, true);
+
+        // xp 1058 add
+        yml.addDefault(ConfigPath.CURRENCY_IRON_PRICE, 1);
+        yml.addDefault(ConfigPath.CURRENCY_GOLD_PRICE, 10);
+        yml.addDefault(ConfigPath.CURRENCY_EMERALD_PRICE, 100);
         yml.options().copyDefaults(true);
         save();
 

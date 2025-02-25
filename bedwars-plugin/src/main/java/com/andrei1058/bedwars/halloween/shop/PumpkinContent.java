@@ -102,7 +102,7 @@ public class PumpkinContent extends CategoryContent {
         ItemStack pumpkin = tier.getItemStack();
 
         boolean canAfford = calculateMoney(player, tier.getCurrency()) >= tier.getPrice();
-        String translatedCurrency = getMsg(player, getCurrencyMsgPath(tier));
+        String translatedCurrency = getMsg(player, getCurrencyMsgPath(player,tier));
 
         String buyStatus;
 

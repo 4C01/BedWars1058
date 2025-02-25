@@ -229,7 +229,11 @@ public class Interact implements Listener {
             if (a != null){
                 if(a.isPlayer(p)){
                     if (b.getType() == Material.CHEST){
+<<<<<<< Updated upstream
                         if (inHand.getType() != Material.WOOD_SWORD && inHand.getType() != Material.COMPASS) {
+=======
+                        if (!nms.isSword(inHand) && inHand.getType() != Material.COMPASS && !nms.isTool(inHand)) {
+>>>>>>> Stashed changes
                             if (a.isSpectator(p) || a.getRespawnSessions().containsKey(p)) {
                                 e.setCancelled(true);
                                 return;
@@ -254,7 +258,11 @@ public class Interact implements Listener {
                                     Map<Integer, ItemStack> remainingItems = chestInventory.addItem(inHand);
                                     if (remainingItems.isEmpty()) {
                                         p.getInventory().setItemInHand(null);
+<<<<<<< Updated upstream
                                         p.sendMessage("§a成功将物品放入箱子！");
+=======
+                                        p.sendMessage("§a你将" + inHand.getAmount() + "个" + inHand.getType().getData().getName() + "放入箱子！");
+>>>>>>> Stashed changes
                                     } else {
                                         p.sendMessage("§c你的队伍箱子已满");
                                     }
@@ -263,7 +271,11 @@ public class Interact implements Listener {
                         }
                     }
                     if (b.getType() == Material.ENDER_CHEST){
+<<<<<<< Updated upstream
                         if (inHand.getType() != Material.WOOD_SWORD && inHand.getType() != Material.COMPASS) {
+=======
+                        if (!nms.isSword(inHand) && inHand.getType() != Material.COMPASS && !nms.isTool(inHand)) {
+>>>>>>> Stashed changes
                             if (a.isSpectator(p) || a.getRespawnSessions().containsKey(p)) {
                                 e.setCancelled(true);
                                 return;
@@ -272,7 +284,11 @@ public class Interact implements Listener {
                             Map<Integer, ItemStack> remainingItems = chestInventory.addItem(inHand);
                             if (remainingItems.isEmpty()) {
                                 p.getInventory().setItemInHand(null);
+<<<<<<< Updated upstream
                                 p.sendMessage("§a成功将物品放入末影箱！");
+=======
+                                p.sendMessage("§a你将" + inHand.getAmount() + "个"  + inHand.getType().getData().getName() + "放入末影箱！");
+>>>>>>> Stashed changes
                             } else {
                                 p.sendMessage("§c你的末影箱已满");
                             }

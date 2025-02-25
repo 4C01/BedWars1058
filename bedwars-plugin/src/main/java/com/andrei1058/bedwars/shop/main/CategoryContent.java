@@ -25,11 +25,13 @@ import com.andrei1058.bedwars.api.arena.IArena;
 import com.andrei1058.bedwars.api.arena.shop.IBuyItem;
 import com.andrei1058.bedwars.api.arena.shop.ICategoryContent;
 import com.andrei1058.bedwars.api.arena.shop.IContentTier;
+import com.andrei1058.bedwars.api.configuration.ConfigManager;
 import com.andrei1058.bedwars.api.configuration.ConfigPath;
 import com.andrei1058.bedwars.api.events.shop.ShopBuyEvent;
 import com.andrei1058.bedwars.api.language.Language;
 import com.andrei1058.bedwars.api.language.Messages;
 import com.andrei1058.bedwars.arena.Arena;
+import com.andrei1058.bedwars.configuration.MainConfig;
 import com.andrei1058.bedwars.configuration.Sounds;
 import com.andrei1058.bedwars.shop.ShopCache;
 import com.andrei1058.bedwars.shop.quickbuy.PlayerQuickBuyCache;
@@ -45,6 +47,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.andrei1058.bedwars.BedWars.config;
 import static com.andrei1058.bedwars.BedWars.nms;
 import static com.andrei1058.bedwars.api.language.Language.getMsg;
 
@@ -166,9 +169,17 @@ public class CategoryContent implements ICategoryContent {
 
         //check money
         int money = calculateMoney(player, ct.getCurrency());
-        if (money < ct.getPrice()) {
-            player.sendMessage(getMsg(player, Messages.SHOP_INSUFFICIENT_MONEY).replace("{currency}", getMsg(player, getCurrencyMsgPath(ct))).
-                    replace("{amount}", String.valueOf(ct.getPrice() - money)));
+        if (!Arena.getArenaByPlayer(player).getConfig().getBoolean("xp")) {
+            if (money < ct.getPrice()) {
+                player.sendMessage(getMsg(player, Messages.SHOP_INSUFFICIENT_MONEY).replace("{currency}", getMsg(player, getCurrencyMsgPath(player,ct))).
+                        replace("{amount}", String.valueOf(ct.getPrice() - money)));
+                Sounds.playSound(ConfigPath.SOUNDS_INSUFF_MONEY, player);
+                return;
+            }
+        }else{
+            if (player.getLevel() < ct.getPrice())
+                player.sendMessage(getMsg(player, Messages.SHOP_INSUFFICIENT_MONEY).replace("{currency}", getMsg(player, getCurrencyMsgPath(player,ct))).
+                        replace("{amount}", String.valueOf(ct.getPrice() - money)));
             Sounds.playSound(ConfigPath.SOUNDS_INSUFF_MONEY, player);
             return;
         }
@@ -236,6 +247,7 @@ public class CategoryContent implements ICategoryContent {
 
     public ItemStack getItemStack(Player player, ShopCache shopCache) {
         IContentTier ct;
+        int multiplier = 1;
         if (shopCache.getContentTier(identifier) == contentTiers.size()) {
             ct = contentTiers.get(contentTiers.size() - 1);
         } else {
@@ -245,6 +257,17 @@ public class CategoryContent implements ICategoryContent {
                 ct = contentTiers.get(shopCache.getContentTier(identifier) - 1);
             }
         }
+        if (Arena.getArenaByPlayer(player).getConfig().getBoolean("xp")){
+            if (ct.getItemStack().getType() == Material.IRON_INGOT){
+                multiplier = config.getInt(ConfigPath.CURRENCY_IRON_PRICE);
+            }
+            if (ct.getItemStack().getType() == Material.GOLD_INGOT){
+                multiplier = config.getInt(ConfigPath.CURRENCY_GOLD_PRICE);
+            }
+            if (ct.getItemStack().getType() == Material.EMERALD){
+                multiplier = config.getInt(ConfigPath.CURRENCY_EMERALD_PRICE);
+            }
+        }
 
         ItemStack i = ct.getItemStack();
         ItemMeta im = i.getItemMeta();
@@ -252,11 +275,14 @@ public class CategoryContent implements ICategoryContent {
         if (im != null) {
             im = i.getItemMeta().clone();
             boolean canAfford = calculateMoney(player, ct.getCurrency()) >= ct.getPrice();
+            if (Arena.getArenaByPlayer(player).getConfig().getBoolean("xp")){
+                canAfford = player.getLevel() >= ct.getPrice() * multiplier;
+            }
             PlayerQuickBuyCache qbc = PlayerQuickBuyCache.getQuickBuyCache(player.getUniqueId());
             boolean hasQuick = qbc != null && hasQuick(qbc);
 
             String color = getMsg(player, canAfford ? Messages.SHOP_CAN_BUY_COLOR : Messages.SHOP_CANT_BUY_COLOR);
-            String translatedCurrency = getMsg(player, getCurrencyMsgPath(ct));
+            String translatedCurrency = getMsg(player, getCurrencyMsgPath(player,ct));
             ChatColor cColor = getCurrencyColor(ct.getCurrency());
 
             int tierI = ct.getValue();
@@ -291,7 +317,7 @@ public class CategoryContent implements ICategoryContent {
                         s = getMsg(player, Messages.SHOP_LORE_QUICK_ADD);
                     }
                 }
-                s = s.replace("{tier}", tier).replace("{color}", color).replace("{cost}", cColor + String.valueOf(ct.getPrice()))
+                s = s.replace("{tier}", tier).replace("{color}", color).replace("{cost}", cColor + String.valueOf(ct.getPrice() * multiplier))
                         .replace("{currency}", cColor + translatedCurrency).replace("{buy_status}", buyStatus);
                 lore.add(s);
             }
@@ -365,7 +391,7 @@ public class CategoryContent implements ICategoryContent {
     /**
      * Cet currency path
      */
-    public static String getCurrencyMsgPath(IContentTier contentTier) {
+    public static String getCurrencyMsgPath(Player player,IContentTier contentTier) {
         String c;
 
         if (contentTier.getCurrency().toString().toLowerCase().contains("iron")) {
@@ -378,6 +404,9 @@ public class CategoryContent implements ICategoryContent {
             c = contentTier.getPrice() == 1 ? Messages.MEANING_DIAMOND_SINGULAR : Messages.MEANING_DIAMOND_PLURAL;
         } else {
             c = contentTier.getPrice() == 1 ? Messages.MEANING_VAULT_SINGULAR : Messages.MEANING_VAULT_PLURAL;
+        }
+        if (player != null && Arena.getArenaByPlayer(player).getConfig().getBoolean("xp")){
+            c = "Level";
         }
         return c;
     }
@@ -440,19 +469,33 @@ public class CategoryContent implements ICategoryContent {
         }
 
         int cost = amount;
-        for (ItemStack i : player.getInventory().getContents()) {
-            if (i == null) continue;
-            if (i.getType() == currency) {
-                if (i.getAmount() < cost) {
-                    cost -= i.getAmount();
-                    nms.minusAmount(player, i, i.getAmount());
-                    player.updateInventory();
-                } else {
-                    nms.minusAmount(player, i, cost);
-                    player.updateInventory();
-                    break;
+        if (!Arena.getArenaByPlayer(player).getConfig().getBoolean("xp") && currency == Material.DIAMOND) {
+            for (ItemStack i : player.getInventory().getContents()) {
+                if (i == null) continue;
+                if (i.getType() == currency) {
+                    if (i.getAmount() < cost) {
+                        cost -= i.getAmount();
+                        nms.minusAmount(player, i, i.getAmount());
+                        player.updateInventory();
+                    } else {
+                        nms.minusAmount(player, i, cost);
+                        player.updateInventory();
+                        break;
+                    }
                 }
             }
+        }
+        else {
+            if(currency == Material.IRON_INGOT) {
+                cost = amount * config.getInt(ConfigPath.CURRENCY_IRON_PRICE);
+            }
+            if(currency == Material.GOLD_INGOT) {
+                cost = amount * config.getInt(ConfigPath.CURRENCY_GOLD_PRICE);
+            }
+            if(currency == Material.EMERALD) {
+                cost = amount * config.getInt(ConfigPath.CURRENCY_EMERALD_PRICE);
+            }
+            player.setLevel(player.getLevel() - cost);
         }
 
     }

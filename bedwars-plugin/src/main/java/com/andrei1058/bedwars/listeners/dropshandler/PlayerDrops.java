@@ -25,6 +25,7 @@ import com.andrei1058.bedwars.api.arena.team.ITeam;
 import com.andrei1058.bedwars.api.configuration.ConfigPath;
 import com.andrei1058.bedwars.api.events.player.PlayerKillEvent;
 import com.andrei1058.bedwars.api.language.Messages;
+import com.andrei1058.bedwars.arena.Arena;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -58,7 +59,7 @@ public class PlayerDrops {
             return true;
         }
         if (killer == null) {
-            // Death without a attacker drops items on the floor
+            // Death without an attacker drops items on the floor
             dropItems(victim, inventory);
             return true;
         }
@@ -100,7 +101,7 @@ public class PlayerDrops {
                         killer.getWorld().dropItemNaturally(new Location(arena.getWorld(), v.getX(), v.getY(), v.getZ()), i);
                     }
                 }
-
+                killer.setLevel(killer.getLevel() + (victim.getLevel() / 2));
             } else {
                 // add-to-inventory feature if receiver is not respawning
                 if (!arena.isPlayer(killer)) return true;
@@ -121,6 +122,7 @@ public class PlayerDrops {
                             materialDrops.put(i.getType(), i.getAmount());
                         }
                     }
+                    killer.setLevel(killer.getLevel() + (victim.getLevel() / 2));
                 }
 
                 for (Map.Entry<Material, Integer> entry : materialDrops.entrySet()) {
@@ -160,6 +162,12 @@ public class PlayerDrops {
             if (i.getType() == Material.DIAMOND || i.getType() == Material.EMERALD || i.getType() == Material.IRON_INGOT || i.getType() == Material.GOLD_INGOT) {
                 player.getLocation().getWorld().dropItemNaturally(player.getLocation(), i);
             }
+        }
+        if (Arena.getArenaByPlayer(player).getConfig().getBoolean("xp")) {
+            for (int i = player.getLevel() / 2; i >= 0; i--) {
+                player.getLocation().getWorld().dropItemNaturally(player.getLocation(), new ItemStack(Material.EXP_BOTTLE));
+            }
+            player.setLevel(player.getLevel() / 2);
         }
     }
 }

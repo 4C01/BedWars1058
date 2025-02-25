@@ -65,6 +65,7 @@ public class TraditionalChinese extends Language {
         yml.addDefault(Messages.COMMAND_JOIN_GROUP_OR_ARENA_NOT_FOUND, "{prefix}&c沒有任何競技場或競技場組被稱為: {name}");
         yml.addDefault(Messages.COMMAND_JOIN_DENIED_IS_FULL, "{prefix}&c這個競技場已經滿了! \n&a请考虑赞助以支持我们！ &7&o(点击查看)");
         yml.addDefault(Messages.COMMAND_JOIN_NO_EMPTY_FOUND, "{prefix}&c目前沒有可用的競技場:(");
+<<<<<<< Updated upstream
         yml.addDefault(Messages.COMMAND_JOIN_DENIED_IS_FULL_OF_VIPS, "{prefix}&c很抱歉，虽然我们已知道你已赞助，但该游戏已满。\n&c此游戏中全是赞助者或管理员。");
         yml.addDefault(Messages.COMMAND_JOIN_DENIED_PARTY_TOO_BIG, "{prefix}&c你的队伍人数太多了，不能作为一个队伍加入该游戏:(");
         yml.addDefault(Messages.COMMAND_JOIN_DENIED_NOT_PARTY_LEADER, "{prefix}&c只有队长才能选择游戏。");
@@ -74,6 +75,17 @@ public class TraditionalChinese extends Language {
         yml.addDefault(Messages.COMMAND_TP_PLAYER_NOT_FOUND, "{prefix}&c无法找到这位玩家！");
         yml.addDefault(Messages.COMMAND_TP_NOT_IN_ARENA, "{prefix}&c该玩家不在任何一场起床战争游戏中！");
         yml.addDefault(Messages.COMMAND_TP_NOT_STARTED, "{prefix}&c该玩家所在的游戏还没开始！");
+=======
+        yml.addDefault(Messages.COMMAND_JOIN_DENIED_IS_FULL_OF_VIPS, "{prefix}&c我們很抱歉，但是這個競技場已經滿了\n&c此游戏中全是赞助者或管理员。");
+        yml.addDefault(Messages.COMMAND_JOIN_DENIED_PARTY_TOO_BIG, "{prefix}&c你的隊伍人數太多了，不能加入遊戲:(");
+        yml.addDefault(Messages.COMMAND_JOIN_DENIED_NOT_PARTY_LEADER, "{prefix}&c只有隊長可以選擇競技場。");
+        yml.addDefault(Messages.COMMAND_JOIN_PLAYER_JOIN_MSG, "{prefix}&7{player}&e加入了遊戲(&b{on}&e/&b{max}&e)！");
+        yml.addDefault(Messages.COMMAND_JOIN_SPECTATOR_MSG, "{prefix}§6你現在正在旁觀 §9{arena}§6。\n{prefix}§e你可以隨時通過 §c/leave§e離開。");
+        yml.addDefault(Messages.COMMAND_JOIN_SPECTATOR_DENIED_MSG, "&c旁觀者不允許進入這個競技場！");
+        yml.addDefault(Messages.COMMAND_TP_PLAYER_NOT_FOUND, "{prefix}&c找不到此玩家！");
+        yml.addDefault(Messages.COMMAND_TP_NOT_IN_ARENA, "{prefix}&c此玩家不在床戰競技場！");
+        yml.addDefault(Messages.COMMAND_TP_NOT_STARTED, "{prefix}&c玩家所在的競技場還沒有開始！");
+>>>>>>> Stashed changes
         yml.addDefault(Messages.COMMAND_TP_USAGE, "{prefix}&c用法：/bw tp <玩家名>");
         yml.addDefault(Messages.REJOIN_NO_ARENA, "{prefix}&c没有可以重新加入的游戏！");
         yml.addDefault(Messages.REJOIN_DENIED, "{prefix}&c由于你所属队伍的床被破坏或游戏已经结束，你不能重新加入。");

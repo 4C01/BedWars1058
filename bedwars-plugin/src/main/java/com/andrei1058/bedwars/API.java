@@ -241,7 +241,7 @@ public class API implements com.andrei1058.bedwars.api.BedWars {
 
         @Override
         public String getCurrencyMsgPath(IContentTier contentTier) {
-            return CategoryContent.getCurrencyMsgPath(contentTier);
+            return CategoryContent.getCurrencyMsgPath(null,contentTier);
         }
 
         @Override
