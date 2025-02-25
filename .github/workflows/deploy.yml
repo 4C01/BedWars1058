@@ -28,6 +28,7 @@ jobs:
       - name: Upload JAR to FTP
         uses: modern-dev/ftp-mirror@v2
         with:
+          files: bedwars-plugin/target/bedwars-plugin-${{env.UPDATE_VERSION}}
           server: ${{ secrets.FTP_SERVER }}
           user: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
