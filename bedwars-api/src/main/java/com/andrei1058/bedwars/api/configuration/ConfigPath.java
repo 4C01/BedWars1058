@@ -349,4 +349,6 @@ public class ConfigPath {
     public static final String CURRENCY_IRON_PRICE = "currency.iron";
     public static final String CURRENCY_GOLD_PRICE = "currency.gold";
     public static final String CURRENCY_EMERALD_PRICE = "currency.emerald";
+
+    public static final String ARENA_IS_XP = "xp";
 }
