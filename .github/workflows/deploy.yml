@@ -2,14 +2,14 @@ name: Deploy with Maven
 
 on:
   push:
-    branches: [master]
+    branches: 
+      - master
+      - xp
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment:
-      name: production
-      url: https://repo.andrei1058.dev
+    environment: production
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK
@@ -17,7 +17,7 @@ jobs:
         with:
           java-version: '19.0.2+7'
           distribution: 'adopt'
-      - name: Deploy with Maven
+      - name: Package with Maven
         env:
           MVN_REPO_USER: ${{ secrets.MVN_REPO_USER }}
           MVN_REPO_PASS: ${{ secrets.MVN_REPO_PASS }}
@@ -31,14 +31,16 @@ jobs:
           export UPDATE_VERSION=`jq '.version' version.json | tr -d '"'`
           mvn versions:set -DnewVersion=$UPDATE_VERSION
           mvn versions:update-child-modules
-          mvn clean deploy -s ci_settings.xml
-          mvn javadoc:javadoc
-          sudo apt install -y -qq lftp
-          lftp -c "set ftp:ssl-allow no; open -u $J_DOCS_USER,$J_DOCS_PASS javadocs.andrei1058.dev; mirror -Rev bedwars-api/target/site/apidocs ./BedWars1058  --ignore-time --parallel=10 --exclude-glob .git* --exclude .git/"
-          curl -F "file=@bedwars-plugin/target/bedwars-plugin-$UPDATE_VERSION.jar" -F api_key=$POLY_API_KEY -F resource_id="1152" -F version="$UPDATE_VERSION" -F title="v$UPDATE_VERSION" -F message="For a detailed update log please visit https://github.com/andrei1058/BedWars1058/releases" "https://api.polymart.org/v1/postUpdate"
-          curl -X PUT https://api.andrei1058.dev/v1/resources/1/versioning/commit -H "Accept: application/json" -H "Authorization: Bearer ${{ secrets.ANDEV_API_TOKEN }}" -H "Content-Type: application/json" --data '{"confirmation": true}' >> version.json
+          mvn clean package -s ci_settings.xml
           echo "UPDATE_VERSION=$UPDATE_VERSION" >> $GITHUB_ENV
-
+      - name: Upload JAR to FTP
+        uses: zinh/ftp-uploader-action@v0.5
+        with:
+          ftpHostname: ${{ secrets.FTP_SERVER }}
+          ftpUsername: ${{ secrets.FTP_USERNAME }}
+          ftpPassword: ${{ secrets.FTP_PASSWORD }}
+          src: target/
+          dest: 4C01/Bedwars1058/
       - name: Create Tag
         uses: softprops/action-gh-release@v1
         with:
