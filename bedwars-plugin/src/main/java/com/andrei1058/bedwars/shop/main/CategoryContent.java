@@ -178,8 +178,8 @@ public class CategoryContent implements ICategoryContent {
             }
         }else{
             if (player.getLevel() < ct.getPrice())
-                player.sendMessage(getMsg(player, Messages.SHOP_INSUFFICIENT_MONEY).replace("{currency}", getMsg(player, getCurrencyMsgPath(player,ct))).
-                        replace("{amount}", String.valueOf(ct.getPrice() - money)));
+                player.sendMessage(getMsg(player, Messages.SHOP_INSUFFICIENT_MONEY).replace("{currency}", "Level").
+                        replace("{amount}", String.valueOf(ct.getPrice() - player.getLevel())));
             Sounds.playSound(ConfigPath.SOUNDS_INSUFF_MONEY, player);
             return;
         }

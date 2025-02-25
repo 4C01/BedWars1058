@@ -1,6 +1,7 @@
 package com.andrei1058.bedwars.listeners;
 
 import com.andrei1058.bedwars.api.configuration.ConfigPath;
+import com.andrei1058.bedwars.api.events.player.PlayerGeneratorCollectEvent;
 import com.andrei1058.bedwars.arena.Arena;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -12,7 +13,7 @@ import static com.andrei1058.bedwars.BedWars.config;
 
 public class PlayerPickUpListener implements Listener {
     @EventHandler
-    public void onPickUp(PlayerPickupItemEvent event){
+    public void onPickUp(PlayerGeneratorCollectEvent event){
         Player player = event.getPlayer();
         Material material = event.getItem().getItemStack().getType();
         if (Arena.getArenaByPlayer(player).getConfig().getBoolean("xp")){
