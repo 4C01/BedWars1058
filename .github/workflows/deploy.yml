@@ -39,8 +39,8 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           user: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local_dir: target/
-          remote_dir: 4C01/Bedwars1058/
+          local_dir: target
+          remote_dir: 4C01/Bedwars1058
       - name: Create Tag
         uses: softprops/action-gh-release@v1
         with:
