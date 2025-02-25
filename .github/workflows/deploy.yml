@@ -2,14 +2,14 @@ name: Deploy with Maven
 
 on:
   push:
-    branches: [master]
+    branches: 
+      - master
+      - xp
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment:
-      name: production
-      url: https://repo.andrei1058.dev
+    environment: production
     steps:
       - uses: actions/checkout@v3
       - name: Set up JDK
@@ -17,7 +17,7 @@ jobs:
         with:
           java-version: '19.0.2+7'
           distribution: 'adopt'
-      - name: Deploy with Maven
+      - name: Package with Maven
         env:
           MVN_REPO_USER: ${{ secrets.MVN_REPO_USER }}
           MVN_REPO_PASS: ${{ secrets.MVN_REPO_PASS }}
@@ -31,10 +31,16 @@ jobs:
           export UPDATE_VERSION=`jq '.version' version.json | tr -d '"'`
           mvn versions:set -DnewVersion=$UPDATE_VERSION
           mvn versions:update-child-modules
-          mvn clean deploy -s ci_settings.xml
-          mvn javadoc:javadoc
+          mvn clean package -s ci_settings.xml
           echo "UPDATE_VERSION=$UPDATE_VERSION" >> $GITHUB_ENV
-
+      - name: Upload JAR to FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: target/
+          server-dir: 4C01/Bedwars1058/
       - name: Create Tag
         uses: softprops/action-gh-release@v1
         with:
