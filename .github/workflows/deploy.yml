@@ -28,7 +28,7 @@ jobs:
       - name: Upload JAR to FTP
         uses: modern-dev/ftp-mirror@v2
         with:
-          files: bedwars-plugin/target/bedwars-plugin-${{env.UPDATE_VERSION}}
+          exclude: classes generated-sources maven-archiver maven-status
           server: ${{ secrets.FTP_SERVER }}
           user: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
@@ -37,7 +37,7 @@ jobs:
       - name: Create Tag
         uses: softprops/action-gh-release@v1
         with:
-          files: bedwars-plugin/target/bedwars-plugin-${{env.UPDATE_VERSION}}
+          files: bedwars-plugin/target/bedwars-plugin-${{env.UPDATE_VERSION}}.jar
           generate_release_notes: true
           name: ${{env.UPDATE_VERSION}}-xp
           tag_name: ${{env.UPDATE_VERSION}}-xp
