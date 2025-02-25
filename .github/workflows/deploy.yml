@@ -34,13 +34,13 @@ jobs:
           mvn clean package -s ci_settings.xml
           echo "UPDATE_VERSION=$UPDATE_VERSION" >> $GITHUB_ENV
       - name: Upload JAR to FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4
+        uses: zinh/ftp-uploader-action@v0.5
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: target/
-          server-dir: 4C01/Bedwars1058/
+          ftpHostname: ${{ secrets.FTP_SERVER }}
+          ftpUsername: ${{ secrets.FTP_USERNAME }}
+          ftpPassword: ${{ secrets.FTP_PASSWORD }}
+          src: target/
+          dest: 4C01/Bedwars1058/
       - name: Create Tag
         uses: softprops/action-gh-release@v1
         with:
