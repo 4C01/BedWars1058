@@ -254,7 +254,7 @@ public class Interact implements Listener {
                                     Map<Integer, ItemStack> remainingItems = chestInventory.addItem(inHand);
                                     if (remainingItems.isEmpty()) {
                                         p.getInventory().setItemInHand(null);
-                                        p.sendMessage("§a你将" + inHand.getAmount() + "个" + inHand.getType().getData().getName() + "放入箱子！");
+                                        p.sendMessage("§a你将" + inHand.getAmount() + "个" + inHand.getType().name() + "放入箱子！");
                                     } else {
                                         p.sendMessage("§c你的队伍箱子已满");
                                     }
@@ -272,7 +272,7 @@ public class Interact implements Listener {
                             Map<Integer, ItemStack> remainingItems = chestInventory.addItem(inHand);
                             if (remainingItems.isEmpty()) {
                                 p.getInventory().setItemInHand(null);
-                                p.sendMessage("§a你将" + inHand.getAmount() + "个"  + inHand.getType().getData().getName() + "放入末影箱！");
+                                p.sendMessage("§a你将" + inHand.getAmount() + "个"  + inHand.getType().name() + "放入末影箱！");
                             } else {
                                 p.sendMessage("§c你的末影箱已满");
                             }

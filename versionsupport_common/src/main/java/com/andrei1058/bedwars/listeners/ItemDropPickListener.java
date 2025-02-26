@@ -57,7 +57,8 @@ public class ItemDropPickListener {
         @SuppressWarnings("deprecation")
         @EventHandler
         public void onDrop(PlayerPickupItemEvent e){
-            if (managePickup(e.getItem(), e.getPlayer())) e.setCancelled(true);
+            if (!e.isCancelled())
+                if (managePickup(e.getItem(), e.getPlayer())) e.setCancelled(true);
         }
     }
 
@@ -73,7 +74,8 @@ public class ItemDropPickListener {
     public static class EntityPickup implements Listener {
         @EventHandler
         public void onPickup(EntityPickupItemEvent e){
-            if (managePickup(e.getItem(), e.getEntity())) e.setCancelled(true);
+            if (!e.isCancelled())
+                if (managePickup(e.getItem(), e.getEntity())) e.setCancelled(true);
         }
     }
 

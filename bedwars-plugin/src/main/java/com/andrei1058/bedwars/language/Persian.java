@@ -210,6 +210,8 @@ public class Persian extends Language {
         yml.addDefault(Messages.MEANING_DIAMOND_PLURAL, "Diamond");
         yml.addDefault(Messages.MEANING_VAULT_SINGULAR, "$");
         yml.addDefault(Messages.MEANING_VAULT_PLURAL, "$");
+        yml.addDefault(Messages.MEANING_XPLEVEL_SINGULAR, "Level");
+        yml.addDefault(Messages.MEANING_XPLEVEL_PLURAL, "Levels");
         yml.addDefault(Messages.INTERACT_CANNOT_PLACE_BLOCK, "{prefix}&cShoma Nemitavanid Inja Block Bezarid.");
         yml.addDefault(Messages.INTERACT_CANNOT_BREAK_BLOCK, "{prefix}&cFaghat Block Hayi Ke Player Ha Gozashtan Ghabele Kandan Ast.");
         yml.addDefault(Messages.INTERACT_CANNOT_BREAK_OWN_BED, "&cShoma Nemitavanid Bed Khodetoon Ra Bekanid.");

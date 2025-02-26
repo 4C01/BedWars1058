@@ -209,6 +209,8 @@ public class SimplifiedChinese extends Language {
         yml.addDefault(Messages.MEANING_DIAMOND_PLURAL, "钻石");
         yml.addDefault(Messages.MEANING_VAULT_SINGULAR, "$");
         yml.addDefault(Messages.MEANING_VAULT_PLURAL, "$");
+        yml.addDefault(Messages.MEANING_XPLEVEL_SINGULAR, "经验");
+        yml.addDefault(Messages.MEANING_XPLEVEL_PLURAL, "经验");
         yml.addDefault(Messages.INTERACT_CANNOT_PLACE_BLOCK, "{prefix}&c你不能在这里放置方块！");
         yml.addDefault(Messages.INTERACT_CANNOT_BREAK_BLOCK, "{prefix}&c你只能破坏由玩家放置的方块！");
         yml.addDefault(Messages.INTERACT_CANNOT_BREAK_OWN_BED, "&c你不能破坏自己的床！");

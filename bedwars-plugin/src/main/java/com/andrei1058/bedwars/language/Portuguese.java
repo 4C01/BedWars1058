@@ -208,6 +208,8 @@ public class Portuguese extends Language {
         yml.addDefault(Messages.MEANING_DIAMOND_PLURAL, "Diamantes");
         yml.addDefault(Messages.MEANING_VAULT_SINGULAR, "$");
         yml.addDefault(Messages.MEANING_VAULT_PLURAL, "$");
+        yml.addDefault(Messages.MEANING_XPLEVEL_SINGULAR, "Level");
+        yml.addDefault(Messages.MEANING_XPLEVEL_PLURAL, "Levels");
         yml.addDefault(Messages.INTERACT_CANNOT_PLACE_BLOCK, "{prefix}&cVocê não pode colocar blocos aqui!");
         yml.addDefault(Messages.INTERACT_CANNOT_BREAK_BLOCK, "{prefix}&cVocê só pode quebrar blocos colocados por um jogador!");
         yml.addDefault(Messages.INTERACT_CANNOT_BREAK_OWN_BED, "&cVocê não pode destruir sua própria cama!");

@@ -205,6 +205,8 @@ public class Polish extends Language{
         yml.addDefault(Messages.MEANING_DIAMOND_PLURAL, "Diamenty");
         yml.addDefault(Messages.MEANING_VAULT_SINGULAR, "$");
         yml.addDefault(Messages.MEANING_VAULT_PLURAL, "$");
+        yml.addDefault(Messages.MEANING_XPLEVEL_SINGULAR, "Level");
+        yml.addDefault(Messages.MEANING_XPLEVEL_PLURAL, "Levels");
         yml.addDefault(Messages.MEANING_NEVER, "NIGDY");
         yml.addDefault(Messages.INTERACT_CANNOT_PLACE_BLOCK, "{prefix}&cNie mozesz tutaj stawiac blokow!");
         yml.addDefault(Messages.INTERACT_CANNOT_BREAK_BLOCK, "{prefix}&c&cMozesz zniszczyc tylko bloki postawione przez graczy!");

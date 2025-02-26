@@ -210,6 +210,8 @@ public class Bangla extends Language {
         yml.addDefault(Messages.MEANING_DIAMOND_PLURAL, "Diamonds");
         yml.addDefault(Messages.MEANING_VAULT_SINGULAR, "$");
         yml.addDefault(Messages.MEANING_VAULT_PLURAL, "$");
+        yml.addDefault(Messages.MEANING_XPLEVEL_SINGULAR, "Level");
+        yml.addDefault(Messages.MEANING_XPLEVEL_PLURAL, "Levels");
         yml.addDefault(Messages.INTERACT_CANNOT_PLACE_BLOCK, "{prefix}&cApni ekhane block place korte parben na!");
         yml.addDefault(Messages.INTERACT_CANNOT_BREAK_BLOCK, "{prefix}&cApni sudhu ekti player er place kora block vangte parben!");
         yml.addDefault(Messages.INTERACT_CANNOT_BREAK_OWN_BED, "&cApni apnar Bichana vangte parben na!");

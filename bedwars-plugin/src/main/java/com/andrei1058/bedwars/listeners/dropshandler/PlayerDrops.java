@@ -20,14 +20,16 @@
 
 package com.andrei1058.bedwars.listeners.dropshandler;
 
+import com.andrei1058.bedwars.BedWars;
 import com.andrei1058.bedwars.api.arena.IArena;
 import com.andrei1058.bedwars.api.arena.team.ITeam;
 import com.andrei1058.bedwars.api.configuration.ConfigPath;
 import com.andrei1058.bedwars.api.events.player.PlayerKillEvent;
 import com.andrei1058.bedwars.api.language.Messages;
-import com.andrei1058.bedwars.arena.Arena;
+import com.andrei1058.bedwars.configuration.ArenaConfig;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
@@ -50,39 +52,68 @@ public class PlayerDrops {
      * @return true if event drops must be cleared.
      */
     public static boolean handlePlayerDrops(IArena arena, Player victim, Player killer, ITeam victimsTeam, ITeam killersTeam, PlayerKillEvent.PlayerKillCause cause, List<ItemStack> inventory) {
+        YamlConfiguration yml;
+        ArenaConfig cm;
+        cm = new ArenaConfig(BedWars.plugin, victim.getWorld().getName(), BedWars.plugin.getDataFolder().getPath() + "/Arenas");
+        yml = cm.getYml();
         if (arena.getConfig().getBoolean(ConfigPath.ARENA_NORMAL_DEATH_DROPS)) {
             return false;
         }
         if (cause == PlayerKillEvent.PlayerKillCause.PLAYER_PUSH || cause == PlayerKillEvent.PlayerKillCause.PLAYER_PUSH_FINAL) {
             // if died by fall damage drop items at location
-            dropItems(victim, inventory);
+            if(yml.getBoolean("xp")){
+                int xp = victim.getLevel() /10;
+                victim.getLocation().getWorld().dropItemNaturally(victim.getLocation(), new ItemStack(Material.EXP_BOTTLE, xp));
+            }else {
+                dropItems(victim, inventory);
+            }
             return true;
         }
         if (killer == null) {
-            // Death without an attacker drops items on the floor
-            dropItems(victim, inventory);
+            // Death without a attacker drops items on the floor
+            if(yml.getBoolean("xp")){
+                int xp = victim.getLevel() /10;
+                victim.getLocation().getWorld().dropItemNaturally(victim.getLocation(), new ItemStack(Material.EXP_BOTTLE, xp));
+            }else {
+                dropItems(victim, inventory);
+            }
             return true;
         }
         if (cause.isDespawnable()) {
             // If killed by a ironGolem or silverFish drop on floor
-            dropItems(victim, inventory);
+            if(yml.getBoolean("xp")){
+                int xp = victim.getLevel() /10;
+                victim.getLocation().getWorld().dropItemNaturally(victim.getLocation(), new ItemStack(Material.EXP_BOTTLE, xp));
+            }else {
+                dropItems(victim, inventory);
+            }
             return true;
         }
         if (cause.isPvpLogOut()) {
             // if is pvp log out drop at disconnect location
-            dropItems(victim, inventory);
+            if(yml.getBoolean("xp")){
+                int xp = victim.getLevel() /10;
+                victim.getLocation().getWorld().dropItemNaturally(victim.getLocation(), new ItemStack(Material.EXP_BOTTLE, xp));
+            }else {
+                dropItems(victim, inventory);
+            }
             return true;
         }
         if (cause.isFinalKill()) {
             // if is final kill drop items at generator
             if (victimsTeam != null) {
                 Location dropsLocation = new Location(victim.getWorld(), victimsTeam.getKillDropsLocation().getBlockX(), victimsTeam.getKillDropsLocation().getY(), victimsTeam.getKillDropsLocation().getZ());
-                victim.getEnderChest().forEach(item -> {
-                    if (item != null) {
-                        victim.getWorld().dropItemNaturally(dropsLocation, item);
-                    }
-                });
-                victim.getEnderChest().clear();
+                if(yml.getBoolean("xp")){
+                    int xp = victim.getLevel() /10;
+                    victim.getLocation().getWorld().dropItemNaturally(dropsLocation, new ItemStack(Material.EXP_BOTTLE, xp));
+                }else {
+                    victim.getEnderChest().forEach(item -> {
+                        if (item != null) {
+                            victim.getWorld().dropItemNaturally(dropsLocation, item);
+                        }
+                    });
+                    victim.getEnderChest().clear();
+                }
             }
         }
 
@@ -98,31 +129,51 @@ public class PlayerDrops {
                     if (!nms.getShopUpgradeIdentifier(i).trim().isEmpty()) continue;
                     if (arena.getTeam(killer) != null) {
                         Vector v = victimsTeam.getKillDropsLocation();
-                        killer.getWorld().dropItemNaturally(new Location(arena.getWorld(), v.getX(), v.getY(), v.getZ()), i);
+                        if(yml.getBoolean("xp")){
+                            int xp = victim.getLevel() /10;
+                            victim.getLocation().getWorld().dropItemNaturally(new Location(arena.getWorld(), v.getX(), v.getY(), v.getZ()), new ItemStack(Material.EXP_BOTTLE, xp));
+                        }else {
+                            killer.getWorld().dropItemNaturally(new Location(arena.getWorld(), v.getX(), v.getY(), v.getZ()), i);
+                        }
                     }
                 }
-                killer.giveExpLevels(victim.getExpToLevel() / 2);
+
             } else {
                 // add-to-inventory feature if receiver is not respawning
                 if (!arena.isPlayer(killer)) return true;
                 if (arena.isReSpawning(killer)) return true;
                 Map<Material, Integer> materialDrops = new HashMap<>();
-                for (ItemStack i : inventory) {
-                    if (i == null) continue;
-                    if (i.getType() == Material.AIR) continue;
-                    if (i.getType() == Material.DIAMOND || i.getType() == Material.EMERALD || i.getType() == Material.IRON_INGOT || i.getType() == Material.GOLD_INGOT) {
-
-                        // add to killer inventory
-                        killer.getInventory().addItem(i);
-
-                        // count items
-                        if (materialDrops.containsKey(i.getType())) {
-                            materialDrops.replace(i.getType(), materialDrops.get(i.getType()) + i.getAmount());
-                        } else {
-                            materialDrops.put(i.getType(), i.getAmount());
+                if(yml.getBoolean("xp")){
+                    int xp = victim.getLevel();
+                    killer.giveExpLevels(xp / 2);
+                    victim.setLevel(xp / 2);
+                    for (ItemStack i : inventory){
+                        if(i.getType() == Material.DIAMOND){
+                            killer.getInventory().addItem(i);
+                            if (materialDrops.containsKey(i.getType())) {
+                                materialDrops.replace(i.getType(), materialDrops.get(i.getType()) + i.getAmount());
+                            } else {
+                                materialDrops.put(i.getType(), i.getAmount());
+                            }
                         }
                     }
-                    killer.giveExpLevels(victim.getExpToLevel() / 2);
+                }else {
+                    for (ItemStack i : inventory) {
+                        if (i == null) continue;
+                        if (i.getType() == Material.AIR) continue;
+                        if (i.getType() == Material.DIAMOND || i.getType() == Material.EMERALD || i.getType() == Material.IRON_INGOT || i.getType() == Material.GOLD_INGOT) {
+
+                            // add to killer inventory
+                            killer.getInventory().addItem(i);
+
+                            // count items
+                            if (materialDrops.containsKey(i.getType())) {
+                                materialDrops.replace(i.getType(), materialDrops.get(i.getType()) + i.getAmount());
+                            } else {
+                                materialDrops.put(i.getType(), i.getAmount());
+                            }
+                        }
+                    }
                 }
 
                 for (Map.Entry<Material, Integer> entry : materialDrops.entrySet()) {
@@ -162,12 +213,6 @@ public class PlayerDrops {
             if (i.getType() == Material.DIAMOND || i.getType() == Material.EMERALD || i.getType() == Material.IRON_INGOT || i.getType() == Material.GOLD_INGOT) {
                 player.getLocation().getWorld().dropItemNaturally(player.getLocation(), i);
             }
-        }
-        if (Arena.getArenaByPlayer(player).getConfig().getBoolean("xp")) {
-            for (int i = player.getExpToLevel() / 2; i >= 0; i--) {
-                player.getLocation().getWorld().dropItemNaturally(player.getLocation(), new ItemStack(Material.EXP_BOTTLE));
-            }
-            player.giveExpLevels(-(player.getExpToLevel() / 2));
         }
     }
 }

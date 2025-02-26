@@ -166,7 +166,6 @@ public class CategoryContent implements ICategoryContent {
                 ct = contentTiers.get(shopCache.getContentTier(getIdentifier()));
             }
         }
-
         //check money
         int money = calculateMoney(player, ct.getCurrency());
         if (!Arena.getArenaByPlayer(player).getConfig().getBoolean("xp")) {
@@ -177,11 +176,24 @@ public class CategoryContent implements ICategoryContent {
                 return;
             }
         }else{
-            if (player.getExpToLevel() < ct.getPrice())
-                player.sendMessage(getMsg(player, Messages.SHOP_INSUFFICIENT_MONEY).replace("{currency}", "Level").
-                        replace("{amount}", String.valueOf(ct.getPrice() - player.getExpToLevel())));
-            Sounds.playSound(ConfigPath.SOUNDS_INSUFF_MONEY, player);
-            return;
+            money = ct.getPrice();
+            switch (ct.getCurrency()) {
+                case EMERALD:
+                    money *= config.getInt(ConfigPath.CURRENCY_EMERALD_PRICE);
+                    break;
+                case GOLD_INGOT:
+                    money *= config.getInt(ConfigPath.CURRENCY_GOLD_PRICE);
+                    break;
+                case IRON_INGOT:
+                    money *= config.getInt(ConfigPath.CURRENCY_IRON_PRICE);
+                    break;
+            }
+            if (player.getLevel() < money){
+                player.sendMessage(getMsg(player, Messages.SHOP_INSUFFICIENT_MONEY).replace("{currency}", getCurrencyMsgPath(player,ct)).
+                        replace("{amount}", String.valueOf(money - player.getLevel())));
+                Sounds.playSound(ConfigPath.SOUNDS_INSUFF_MONEY, player);
+                return;
+            }
         }
 
         ShopBuyEvent event;
@@ -258,13 +270,13 @@ public class CategoryContent implements ICategoryContent {
             }
         }
         if (Arena.getArenaByPlayer(player).getConfig().getBoolean("xp")){
-            if (ct.getItemStack().getType() == Material.IRON_INGOT){
+            if (ct.getCurrency() == Material.IRON_INGOT){
                 multiplier = config.getInt(ConfigPath.CURRENCY_IRON_PRICE);
             }
-            if (ct.getItemStack().getType() == Material.GOLD_INGOT){
+            if (ct.getCurrency() == Material.GOLD_INGOT){
                 multiplier = config.getInt(ConfigPath.CURRENCY_GOLD_PRICE);
             }
-            if (ct.getItemStack().getType() == Material.EMERALD){
+            if (ct.getCurrency() == Material.EMERALD){
                 multiplier = config.getInt(ConfigPath.CURRENCY_EMERALD_PRICE);
             }
         }
@@ -276,13 +288,17 @@ public class CategoryContent implements ICategoryContent {
             im = i.getItemMeta().clone();
             boolean canAfford = calculateMoney(player, ct.getCurrency()) >= ct.getPrice();
             if (Arena.getArenaByPlayer(player).getConfig().getBoolean("xp")){
-                canAfford = player.getExpToLevel() >= ct.getPrice() * multiplier;
+                canAfford = player.getLevel() >= (ct.getPrice() * multiplier);
             }
             PlayerQuickBuyCache qbc = PlayerQuickBuyCache.getQuickBuyCache(player.getUniqueId());
             boolean hasQuick = qbc != null && hasQuick(qbc);
 
             String color = getMsg(player, canAfford ? Messages.SHOP_CAN_BUY_COLOR : Messages.SHOP_CANT_BUY_COLOR);
-            String translatedCurrency = getMsg(player, getCurrencyMsgPath(player,ct));
+            String translatedCurrency;
+
+
+            if (Arena.getArenaByPlayer(player).getConfig().getBoolean("xp")){translatedCurrency = getCurrencyMsgPath(player,ct);}
+            else{translatedCurrency = getMsg(player, getCurrencyMsgPath(player,ct));}
             ChatColor cColor = getCurrencyColor(ct.getCurrency());
 
             int tierI = ct.getValue();
@@ -317,8 +333,13 @@ public class CategoryContent implements ICategoryContent {
                         s = getMsg(player, Messages.SHOP_LORE_QUICK_ADD);
                     }
                 }
-                s = s.replace("{tier}", tier).replace("{color}", color).replace("{cost}", cColor + String.valueOf(ct.getPrice() * multiplier))
-                        .replace("{currency}", cColor + translatedCurrency).replace("{buy_status}", buyStatus);
+                if (!Arena.getArenaByPlayer(player).getConfig().getBoolean("xp")) {
+                    s = s.replace("{tier}", tier).replace("{color}", color).replace("{cost}", cColor + String.valueOf(ct.getPrice() * multiplier))
+                            .replace("{currency}", cColor + translatedCurrency).replace("{buy_status}", buyStatus);
+                }else {
+                    s = s.replace("{tier}", tier).replace("{cost}", String.valueOf(ct.getPrice() * multiplier))
+                            .replace("{currency}", cColor + translatedCurrency).replace("{buy_status}", buyStatus);
+                }
                 lore.add(s);
             }
 
@@ -406,7 +427,7 @@ public class CategoryContent implements ICategoryContent {
             c = contentTier.getPrice() == 1 ? Messages.MEANING_VAULT_SINGULAR : Messages.MEANING_VAULT_PLURAL;
         }
         if (player != null && Arena.getArenaByPlayer(player).getConfig().getBoolean("xp")){
-            c = "Level";
+            c = contentTier.getPrice() == 1 ? Language.getPlayerLanguage(player).m(Messages.MEANING_XPLEVEL_SINGULAR) : Language.getPlayerLanguage(player).m(Messages.MEANING_XPLEVEL_PLURAL);
         }
         return c;
     }
@@ -469,7 +490,7 @@ public class CategoryContent implements ICategoryContent {
         }
 
         int cost = amount;
-        if (!Arena.getArenaByPlayer(player).getConfig().getBoolean("xp") && currency == Material.DIAMOND) {
+        if (!Arena.getArenaByPlayer(player).getConfig().getBoolean("xp") || currency == Material.DIAMOND) {
             for (ItemStack i : player.getInventory().getContents()) {
                 if (i == null) continue;
                 if (i.getType() == currency) {

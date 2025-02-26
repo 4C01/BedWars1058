@@ -303,6 +303,8 @@ public class Messages {
     public static String MEANING_VAULT_SINGULAR = "meaning-vault-singular";
     public static String MEANING_VAULT_PLURAL = "meaning-vault-plural";
     public static String MEANING_NO_TRAP = "meaning-no-trap";
+    public static String MEANING_XPLEVEL_SINGULAR = "meaning-xplevel-singular";
+    public static String MEANING_XPLEVEL_PLURAL = "meaning-xplevel-plural";
 
     /**
      * Scoreboard related
@@ -542,4 +544,5 @@ public class Messages {
     public static String FORMATTING_SPECTATOR_TEAM = "format-spectator-team";
     @Deprecated(forRemoval = true)
     public static String FORMATTING_SPECTATOR_COLOR = FORMATTING_SPECTATOR_TEAM;
+
 }

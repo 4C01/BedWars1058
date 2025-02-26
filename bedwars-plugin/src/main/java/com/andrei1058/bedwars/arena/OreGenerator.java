@@ -173,7 +173,7 @@ public class OreGenerator implements IGenerator {
                 return;
             }
             if (plugin.getConfig().getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENABLE_GEN_SPLIT)) {
-                Object[] players = location.getWorld().getNearbyEntities(location, 1, 1, 1).stream().filter(entity -> entity.getType() == EntityType.PLAYER)
+                Object[] players = location.getWorld().getNearbyEntities(location, 1.5, 1.5, 1.5).stream().filter(entity -> entity.getType() == EntityType.PLAYER)
                         .filter(entity -> arena.isPlayer((Player) entity)).toArray();
                 if (players.length <= 1) {
                     dropItem(location);
@@ -183,10 +183,27 @@ public class OreGenerator implements IGenerator {
                     Player player = (Player) o;
                     ItemStack item = ore.clone();
                     item.setAmount(amount);
-                    player.playSound(player.getLocation(), Sound.valueOf(BedWars.getForCurrentVersion("ITEM_PICKUP", "ENTITY_ITEM_PICKUP", "ENTITY_ITEM_PICKUP")), 0.6f, 1.3f);
-                    Collection<ItemStack> excess = player.getInventory().addItem(item).values();
-                    for (ItemStack value : excess) {
-                        dropItem(player.getLocation(), value.getAmount());
+                    if (arena.getConfig().getBoolean("xp")){
+                        int xps = 0;
+                        Material oreMat = ore.getType();
+                        if (oreMat == Material.DIAMOND) {return;}
+                        if (oreMat == Material.IRON_INGOT) {
+                            xps = amount * config.getInt(ConfigPath.CURRENCY_IRON_PRICE);
+                        }
+                        if (oreMat == Material.GOLD_INGOT) {
+                            xps = amount * config.getInt(ConfigPath.CURRENCY_GOLD_PRICE);
+                        }
+                        if (oreMat == Material.EMERALD) {
+                            xps = amount * config.getInt(ConfigPath.CURRENCY_EMERALD_PRICE);
+                        }
+                            player.playSound(player.getLocation(), Sound.valueOf(BedWars.getForCurrentVersion("SUCCESSFUL_HIT", "ENTITY_EXPERIENCE_ORB_PICKUP", "ENTITY_EXPERIENCE_ORB_PICKUP")), 0.6f, 1.3f);
+                            player.giveExpLevels(xps);
+                    }else {
+                        player.playSound(player.getLocation(), Sound.valueOf(BedWars.getForCurrentVersion("ITEM_PICKUP", "ENTITY_ITEM_PICKUP", "ENTITY_ITEM_PICKUP")), 0.6f, 1.3f);
+                        Collection<ItemStack> excess = player.getInventory().addItem(item).values();
+                        for (ItemStack value : excess) {
+                            dropItem(player.getLocation(), value.getAmount());
+                        }
                     }
                 }
                 return;

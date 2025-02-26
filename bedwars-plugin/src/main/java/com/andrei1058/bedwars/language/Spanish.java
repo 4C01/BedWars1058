@@ -760,6 +760,8 @@ public class Spanish extends Language {
         yml.addDefault(Messages.MEANING_DIAMOND_PLURAL, "Diamantes");
         yml.addDefault(Messages.MEANING_VAULT_SINGULAR, "$");
         yml.addDefault(Messages.MEANING_VAULT_PLURAL, "$");
+        yml.addDefault(Messages.MEANING_XPLEVEL_SINGULAR, "Level");
+        yml.addDefault(Messages.MEANING_XPLEVEL_PLURAL, "Levels");
 
         yml.addDefault(Messages.COMMAND_JOIN_USAGE, "§a▪ §7Usa: /" + mainCmd + " join §o<arena/grupo>");
         yml.addDefault(Messages.COMMAND_NOT_ALLOWED_IN_GAME, "{prefix}&cNo tienes permisos para hacer esto.");

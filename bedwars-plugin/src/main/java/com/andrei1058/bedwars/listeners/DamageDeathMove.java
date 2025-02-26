@@ -56,6 +56,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -72,6 +73,7 @@ public class DamageDeathMove implements Listener {
     private final double tntDamageSelf;
     private final double tntDamageTeammates;
     private final double tntDamageOthers;
+    private int xp;
 
     public DamageDeathMove() {
         this.tntJumpBarycenterAlterationInY = config.getYml().getDouble(ConfigPath.GENERAL_TNT_JUMP_BARYCENTER_IN_Y);
@@ -324,10 +326,11 @@ public class DamageDeathMove implements Listener {
     }
 
     @EventHandler
-    public void onDeath(PlayerDeathEvent e) {
+    public void onDeath(@NotNull PlayerDeathEvent e) {
         Player victim = e.getEntity(), killer = e.getEntity().getKiller();
         ITeam killersTeam = null;
         IArena a = Arena.getArenaByPlayer(victim);
+        xp = (victim.getLevel() / 2);
         if ((BedWars.getServerType() == ServerType.MULTIARENA && BedWars.getLobbyWorld().equals(e.getEntity().getWorld().getName())) || a != null) {
             e.setDeathMessage(null);
         }
@@ -498,6 +501,7 @@ public class DamageDeathMove implements Listener {
                 }
                 victimsTeam.getGenerators().clear();
             }
+            victim.setLevel(xp);
         }
     }
 
