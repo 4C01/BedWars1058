@@ -71,7 +71,7 @@ public class ArenaConfig extends ConfigManager {
         rules.add("doFireTick:false");
         rules.add("randomTickSpeed:0");
         yml.addDefault(ConfigPath.ARENA_GAME_RULES, rules);
-        yml.addDefault(ConfigPath.ARENA_IS_XP, true);
+        yml.addDefault(ConfigPath.ARENA_IS_XP, false);
         yml.options().copyDefaults(true);
         save();
 
