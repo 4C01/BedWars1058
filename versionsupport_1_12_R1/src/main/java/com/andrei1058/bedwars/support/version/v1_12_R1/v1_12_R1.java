@@ -425,6 +425,7 @@ public class v1_12_R1 extends VersionSupport {
             case "WOOL":
             case "STAINED_CLAY":
             case "STAINED_GLASS":
+            case "STAINED_GLASS_PANE":
                 return new org.bukkit.inventory.ItemStack(itemStack.getType(), itemStack.getAmount(), bedWarsTeam.getColor().itemByte());
             case "GLASS":
                 return new org.bukkit.inventory.ItemStack(org.bukkit.Material.STAINED_GLASS, itemStack.getAmount(), bedWarsTeam.getColor().itemByte());
