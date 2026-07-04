@@ -31,7 +31,7 @@ public class PlayerPickUpListener implements Listener {
         if (item.getItemStack().hasItemMeta()) {
             //noinspection ConstantConditions
             if (item.getItemStack().getItemMeta().hasDisplayName()) {
-                if (item.getItemStack().getItemMeta().getDisplayName().contains("custom")) {
+                if (item.getItemStack().getItemMeta().getDisplayName().contains("custom") && plugin.getConfig().getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENABLE_GEN_SPLIT)) {
                     ItemMeta itemMeta = new ItemStack(material).getItemMeta();
                     item.getItemStack().setItemMeta(itemMeta);
                     Location location = event.getPlayer().getLocation();
