@@ -35,6 +35,8 @@ public class PlayerGeneratorCollectListener implements Listener {
                     for (Entity entity : player.getWorld().getNearbyEntities(location, 2.0D, 2.0D, 2.0D)){
                         if (entity instanceof Player && entity != player){
                             Player nearby = (Player) entity;
+                            if (!Arena.getArenaByPlayer(player).getTeam(player).isMember(nearby))
+                                continue;
                             if (Arena.getArenaByPlayer(player).getConfig().getBoolean("xp")) {
                                 int xps = 0;
                                 switch (material) {
