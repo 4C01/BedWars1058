@@ -29,6 +29,8 @@ public class PlayerGeneratorCollectListener implements Listener {
             //noinspection ConstantConditions
             if (item.getItemStack().getItemMeta().hasDisplayName()) {
                 if (item.getItemStack().getItemMeta().getDisplayName().contains("custom") && plugin.getConfig().getBoolean(ConfigPath.GENERAL_CONFIGURATION_ENABLE_GEN_SPLIT)) {
+                    if (!(material == Material.IRON_INGOT || material == Material.GOLD_INGOT))
+                        return;
                     ItemMeta itemMeta = new ItemStack(material).getItemMeta();
                     item.getItemStack().setItemMeta(itemMeta);
                     Location location = event.getPlayer().getLocation();
@@ -45,9 +47,6 @@ public class PlayerGeneratorCollectListener implements Listener {
                                         break;
                                     case GOLD_INGOT:
                                         xps = event.getItem().getItemStack().getAmount() * config.getInt(ConfigPath.CURRENCY_GOLD_PRICE);
-                                        break;
-                                    case EMERALD:
-                                        xps = event.getItem().getItemStack().getAmount() * config.getInt(ConfigPath.CURRENCY_EMERALD_PRICE);
                                         break;
                                 }
                                 if(xps != 0) {
